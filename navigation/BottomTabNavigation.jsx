@@ -1,12 +1,12 @@
-
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { COLORS } from "../constants/index";
 import { Home, Profile, Search } from "../screens";
 
 const Tab= createBottomTabNavigator();
 
 const screenOptions ={
-    tabBarShowLabel: False,
+    tabBarShowLabel: false,
     tabBarHideOnKeyboard: true,
     headerShown: false,
     tabBarStyle: {
@@ -15,7 +15,7 @@ const screenOptions ={
         right:0,
         left: 0,
         elevation:0,
-        height: 70
+        height: 70,
     }
 }
 
@@ -29,9 +29,9 @@ const BottomTabNavigation = () => {
                 {
                     tabBarIcon: ({focused})=>{
                         return <Ionicons 
-                        name={focused ? "home": "homeoutline"} 
+                        name={focused ? "home": "home-outline"} 
                         size={24}
-                        color={focused ? Colors.primary : Colors.gray2}
+                        color={focused ? COLORS.primary : COLORS.gray2}
                         />
                     }
                 }}
@@ -46,7 +46,7 @@ const BottomTabNavigation = () => {
                         return <Ionicons 
                         name={"search-sharp"} 
                         size={24}
-                        color={focused ? Colors.primary : Colors.gray2}
+                        color={focused ? COLORS.primary : COLORS.gray2}
                         />
                     }
                 }}
@@ -61,7 +61,7 @@ const BottomTabNavigation = () => {
                         return <Ionicons 
                         name={focused ? "person": "person-outline"} 
                         size={24}
-                        color={focused ? Colors.primary : Colors.gray2}
+                        color={focused ? COLORS.primary : COLORS.gray2}
                         />
                     }
                 }}
