@@ -1,13 +1,14 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import styles from './home.style';
 
 const Home = () => {
   return (
-    <View>
-      <Text>Home</Text>
-    </View>
+    <SafeAreaView>
+      <Text style={styles.textStyle}>Home</Text>
+    </SafeAreaView>
   )
 }
 
 export default Home
 
-const styles = StyleSheet.create({})
