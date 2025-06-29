@@ -1,25 +1,38 @@
-import 'react-native-reanimated'; // Must be the very first line
-
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
+import { useCallback, useEffect } from 'react';
+import 'react-native-reanimated';
 
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
 
   const [fontsLoaded] = useFonts({
-    'Poppins-Regular': require('../assets/fonts/PoppinsLight-l4Zw.otf'),
-    'Poppins-Medium': require('../assets/fonts/PoppinsMedium-1JPv.otf'),
-    'Poppins-SemiBold': require('../assets/fonts/PoppinsSemibold-8l8n.otf'),
-    'Poppins-Bold': require('../assets/fonts/PoppinsBold-GdJA.otf'),
-    'Poppins-ExtraBold': require('../assets/fonts/PoppinsExtrabold-zDdL.otf'),
+    regular: require('../assets/fonts/Poppins Regular 400.ttf'),
+    light: require('../assets/fonts/Poppins Light 300.ttf'),
+    bold: require('../assets/fonts/Poppins Bold 700.ttf'),
+    medium: require('../assets/fonts/Poppins Medium 500.ttf'),
+    extrabold: require('../assets/fonts/Poppins ExtraBold 800.ttf'),
+    semibold: require('../assets/fonts/Poppins SemiBold 600.ttf'),
   });
 
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  useEffect(() => {
+    onLayoutRootView();
+  }, [onLayoutRootView]);
+
   if (!fontsLoaded) {
-    return null; // or a loading spinner
+    return null;
   }
 
   return (
