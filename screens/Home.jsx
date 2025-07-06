@@ -1,3 +1,4 @@
+import { Fontisto } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, View } from 'react-native-web';
 import styles from './home.style';
@@ -13,11 +14,15 @@ const Home = () => {
         
           <View style={{alignItems: "flex-end"}}>
             <View styles={styles.cartCount}>
-              <Text>8</Text>
+              <Text style={styles.cartNumber}>8</Text>
             </View>
+            <Fontisto name='shopping-bag' size={24}/>
           </View>
         </View>
       </View>
+      <ScrollView>
+        <Welcome/>
+      </ScrollView>
     </SafeAreaView>
   )
 }

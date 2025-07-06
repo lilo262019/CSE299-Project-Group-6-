@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { Colors } from "react-native/Libraries/NewAppScreen";
+import { COLORS } from "../../constants";
 
 const styles =StyleSheet.create({
     textStyle: {
@@ -30,6 +30,12 @@ const styles =StyleSheet.create({
         backgroundColor:"pink4",
         justifyContent:"center",
         zIndex:999
+    },
+    cartNumber:{
+        fontFamily:"regular",
+        fontWeight:"600",
+        fontSize:10,
+        color: COLORS.lightWhite
     }
 })
 
