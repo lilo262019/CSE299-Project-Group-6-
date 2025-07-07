@@ -11,25 +11,20 @@ import { Cart } from './screens';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  console.log("App component rendered"); // Debug: confirm render
-
-  // Prevent splash screen from auto-hiding until fonts are loaded
+  console.log("App component rendered");
   useEffect(() => {
     SplashScreen.preventAutoHideAsync();
   }, []);
 
-  // Comment out custom fonts for debugging
-  // const [fontsLoaded] = useFonts({
-  //   regular: require("./assets/fonts/Poppins-Regular-400.ttf"),
-  //   light: require("./assets/fonts/Poppins-Light-300.ttf"),
-  //   bold: require("./assets/fonts/Poppins-Bold-700.ttf"),
-  //   medium: require("./assets/fonts/Poppins-Medium-500.ttf"),
-  //   extrabold: require("./assets/fonts/Poppins-ExtraBold-800.ttf"),
-  //   semibold: require("./assets/fonts/Poppins-SemiBold-600.ttf"),
-  // });
-
-  // Use this instead to always load
-  const fontsLoaded = true;
+  // Use the useFonts hook properly:
+  const [fontsLoaded] = useFonts({
+    regular: require("./assets/fonts/Poppins-Regular-400.ttf"),
+    light: require("./assets/fonts/Poppins-Light-300.ttf"),
+    bold: require("./assets/fonts/Poppins-Bold-700.ttf"),
+    medium: require("./assets/fonts/Poppins-Medium-500.ttf"),
+    extrabold: require("./assets/fonts/Poppins-ExtraBold-800.ttf"),
+    semibold: require("./assets/fonts/Poppins-SemiBold-600.ttf"),
+  });
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
@@ -66,3 +61,4 @@ export default function App() {
     </View>
   );
 }
+   
