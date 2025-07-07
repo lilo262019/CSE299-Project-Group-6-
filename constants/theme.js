@@ -11,3 +11,5 @@ const SIZES={
     height,
     width
 };
+
+export default SIZES;

@@ -1,5 +1,4 @@
-import { Colors } from "./Colors";
-import theme from "./theme";
 
-export const COLORS = Colors;
-export const THEME = theme;
+import { COLORS } from "./Colors";
+import SIZES from "./theme";
+export { COLORS, SIZES };
