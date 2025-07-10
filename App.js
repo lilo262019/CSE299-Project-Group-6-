@@ -16,7 +16,6 @@ export default function App() {
     SplashScreen.preventAutoHideAsync();
   }, []);
 
-  // Use the useFonts hook properly:
   const [fontsLoaded] = useFonts({
     regular: require("./assets/fonts/Poppins-Regular-400.ttf"),
     light: require("./assets/fonts/Poppins-Light-300.ttf"),
@@ -61,4 +60,4 @@ export default function App() {
     </View>
   );
 }
-   
+

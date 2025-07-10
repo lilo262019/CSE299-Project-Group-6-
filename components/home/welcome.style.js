@@ -8,7 +8,6 @@ container:{
 welcomeTxt: (color)=>({
     fontFamily:"bold",
     fontSize:SIZES.xxLarge -5,
-    marginTop:top,
     color:color,
     marginHorizontal: 12
 } )  
