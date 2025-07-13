@@ -1,6 +1,5 @@
 import { Fontisto, Ionicons } from '@expo/vector-icons';
-import { Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import Welcome from '../components/home/Welcome';
 import style from './home.style';
 
@@ -10,19 +9,24 @@ const Home = () => {
       <View style={style.appBarWrapper}>
         <View style={style.appBar}>
           <Ionicons name='location-outline' size={24} />
+
           <Text style={style.location}> Dhaka Bangladesh</Text>
-          <View style={{ alignItems: "flex-end" }}>
+          
+             <TouchableOpacity></TouchableOpacity><View style={{ alignItems: "flex-end" }}>
             <View style={style.cartCount}>
               <Text style={style.cartNumber}>0</Text>
             </View>
+              <TouchableOpacity>
             <Fontisto name='shopping-bag' size={24} />
+            </TouchableOpacity>
           </View>
         </View>
       </View>
-      <SafeAreaView>
-        { <Welcome /> }
-        <Text>Test Content</Text>
-      </SafeAreaView>
+    
+      <ScrollView>
+         <Welcome /> 
+      </ScrollView>
+      
     </View>
   )
 }
