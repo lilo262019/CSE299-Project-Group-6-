@@ -1,19 +1,8 @@
 import { StyleSheet } from "react-native";
-import { COLORS, SIZES } from "../../constants";
+import { COLORS, SIZES } from "../constants";
 
 const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-  },
-  WelcomeTxt: (color,top) => ({
-    fontFamily: "bold",
-    fontSize: SIZES.xxLarge - 8,
-    marginTop: top,
-    marginHorizontal:SIZES.small,
-    color: color,
-    lineHeight: SIZES.large + 27
-  }),
-   searchContainer:{
+    searchContainer:{
     flexDirection:"row",
     justifyContent:"center",
     alignContent:"center",
@@ -22,28 +11,27 @@ const styles = StyleSheet.create({
     marginVertical : SIZES.medium,
     marginHorizontal :22,
     height:50,
-    width
    },
-    searchIcon:{
-    marginHorizontal:10,
-    color: COLORS.gray,
-    marginTop: SIZES.small
-
-  },
-   searchWrapper:{
+        searchIcon:{
+        marginHorizontal:10,
+        color: COLORS.gray,
+        marginTop: SIZES.small
+    
+      },
+       searchWrapper:{
     flex:1,
     backgroundColor: COLORS.pink1,
     marginRight:SIZES.small,
     borderRadius:SIZES.small
   },
-   searchInput:
-{
-  fontFamily:"regular",
-  width:"100%",
-  height:"100%",
-  paddingHorizontal: SIZES.small
-},
-searchBtn:{
+       searchInput:
+    {
+      fontFamily:"regular",
+      width:"100%",
+      height:"100%",
+      paddingHorizontal: SIZES.small
+    },
+   searchBtn:{
   width:50,
   height:"100%",
   borderRadius: SIZES.medium,
@@ -52,7 +40,5 @@ searchBtn:{
   alignContent:"center",
   backgroundColor: COLORS.primary
 }
-
-
 })
 export default styles

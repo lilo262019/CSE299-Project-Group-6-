@@ -2,11 +2,13 @@ const tintColorLight = '#0a7ea4';
 const tintColorDark = '#fff';
 const COLORS = {
   primary: "#8a3749",
-  secondary: "#687076",
+  secondary: "#f0eaeeff",
   background: "#fff",
   black: "#000000",
+  gray1: "#e6e6e6",
   gray2: "#9BA1A6",
   gray: "#888888",
+  pink1:"#ebe0e6ff",
   pink4: "#cc3d6c",
   pink3: "#dc748c",
   text: "#11181C",

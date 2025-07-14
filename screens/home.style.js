@@ -27,7 +27,7 @@ const styles =StyleSheet.create({
         height: 16,
         borderRadius: 8,
         alignItems: "center",
-        backgroundColor:"pink4",
+        backgroundColor:COLORS.pink4,
         justifyContent:"center",
         zIndex:999
     },
