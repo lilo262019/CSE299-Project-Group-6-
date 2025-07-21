@@ -4,7 +4,7 @@ import { COLORS, SIZES } from "../../constants";
 const styles = StyleSheet.create({
     container:{
         width:182,
-        height:240,
+        height:260,
         marginEnd:22,
         borderRadius:SIZES.medium,
         backgroundColor:COLORS.secondary,
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     title:{
         fontFamily:"bold",
          fontSize:SIZES.large,
-        marginBottom:2
+        marginBottom:1
     },
     supplier:{
         fontFamily:"regular",
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     },
     price:{
         fontFamily:"bold",
-         fontSize:SIZES.large,
+         fontSize:SIZES.medium,
 
     },
     addBtn:{

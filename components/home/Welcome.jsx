@@ -2,7 +2,8 @@ import { Feather, Ionicons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { COLORS, SIZES } from "../../constants";
-import styles from "./welcome.style";
+import styles, { WelcomeTxt } from "./welcome.style";
+
 
 const Welcome = () => {
     const navigation = useNavigation();
@@ -10,8 +11,8 @@ const Welcome = () => {
     <View>
       
       <View style={styles.container}>
-        <Text style={styles.WelcomeTxt(COLORS.black, SIZES.xSmall)}>{""}Find The Most</Text>
-        <Text style={styles.WelcomeTxt(COLORS.pink4,0)}>
+        <Text style={WelcomeTxt(COLORS.black, SIZES.xsmall)}>{""}Find The Most</Text>
+        <Text style={WelcomeTxt(COLORS.pink4,0)}>
           Authentic Beauty Essentials
         </Text>
       </View>

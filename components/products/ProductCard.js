@@ -1,4 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { COLORS } from '../../constants';
 
 export default function ProductCard({ product, onPress }) {
   return (
@@ -17,6 +18,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 10,
   },
-  name: { fontSize: 18 },
-  price: { color: 'green' },
+  name: { fontSize: 18 }, 
+  price: { color: COLORS.pink4 },
 });

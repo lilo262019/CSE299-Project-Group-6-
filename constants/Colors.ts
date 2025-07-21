@@ -12,6 +12,7 @@ const COLORS = {
   pink4: "#cc3d6c",
   pink3: "#dc748c",
   text: "#11181C",
+  lightWhite:"#F9F9F9",
 
 };
 

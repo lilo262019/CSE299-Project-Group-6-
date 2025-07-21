@@ -35,7 +35,7 @@ const styles =StyleSheet.create({
         fontFamily:"regular",
         fontWeight:"600",
         fontSize:10,
-        color: COLORS.lightWhite
+        color: COLORS.background
     }
 })
 
