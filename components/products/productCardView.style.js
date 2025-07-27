@@ -4,17 +4,17 @@ import { COLORS, SIZES } from "../../constants";
 const styles = StyleSheet.create({
     container:{
         width:182,
-        height:260,
+        height:270,
         marginEnd:22,
         borderRadius:SIZES.medium,
         backgroundColor:COLORS.secondary,
     },
     imageContainer:{
         flex:1,
-        borderRadius:SIZES.small,
         width:170,
         marginTop:SIZES.small/2,
         marginLeft:SIZES.small/2,
+        borderRadius:SIZES.small,
         overflow:"hidden",
     },
     image:{
@@ -27,17 +27,17 @@ const styles = StyleSheet.create({
     },
     title:{
         fontFamily:"bold",
-         fontSize:SIZES.large,
+        fontSize:SIZES.large,
         marginBottom:1
     },
     supplier:{
         fontFamily:"regular",
-         fontSize:SIZES.small,
+        fontSize:SIZES.small,
         color:COLORS.gray,
     },
     price:{
         fontFamily:"bold",
-         fontSize:SIZES.medium,
+        fontSize:SIZES.medium,
 
     },
     addBtn:{

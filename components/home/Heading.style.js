@@ -3,8 +3,8 @@ import { COLORS, SIZES } from "../../constants";
 
 const styles = StyleSheet.create({
     container:{
-        marginTop: SIZES.xsmall,
-        justifyContent: "space-between",
+        marginTop: SIZES.medium,
+        marginHorizontal:12
     },
     header: { 
     flexDirection: "row",

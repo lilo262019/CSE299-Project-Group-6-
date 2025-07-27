@@ -2,43 +2,49 @@ import { StyleSheet } from "react-native";
 import { COLORS, SIZES } from "../constants";
 
 const styles = StyleSheet.create({
-    searchContainer:{
+searchContainer:{
     flexDirection:"row",
     justifyContent:"center",
     alignContent:"center",
     backgroundColor: COLORS.pink1,
     borderRadius:  SIZES.medium,
     marginVertical : SIZES.medium,
-    marginHorizontal :22,
+    marginHorizontal :SIZES.small,
     height:50,
    },
-        searchIcon:{
+  searchIcon:{
         marginHorizontal:10,
         color: COLORS.gray,
-        marginTop: SIZES.small
-    
+        marginTop: SIZES.small   
       },
-       searchWrapper:{
+  searchWrapper:{
     flex:1,
     backgroundColor: COLORS.pink1,
     marginRight:SIZES.small,
     borderRadius:SIZES.small
   },
-       searchInput:
+  searchInput:
     {
       fontFamily:"regular",
       width:"100%",
       height:"100%",
       paddingHorizontal: SIZES.small
     },
-   searchBtn:{
-  width:50,
-  height:"100%",
-  borderRadius: SIZES.medium,
-  alignItems:"center",
-  justifyContent:"center",
-  alignContent:"center",
-  backgroundColor: COLORS.primary
-}
+  searchBtn:{
+    width:50,
+    height:"100%",
+    borderRadius: SIZES.medium,
+    alignItems:"center",
+    justifyContent:"center",
+    alignContent:"center",
+    backgroundColor: COLORS.primary
+},
+searchImage:{
+    
+    resizeMode:"contain",
+    width:SIZES.width-30,
+    height:SIZES.height-200,
+    opacity:0.9
+},
 })
 export default styles

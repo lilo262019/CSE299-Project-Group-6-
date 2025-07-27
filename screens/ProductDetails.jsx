@@ -1,10 +1,14 @@
-import { Ionicons, SimpleLineIcons } from '@expo/vector-icons'
+import { Fontisto, Ionicons, MaterialCommunityIcons, SimpleLineIcons } from '@expo/vector-icons'
 import React, { useState } from 'react'
+import {useRoute} from '@react-navigation/native'
 import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { COLORS, SIZES } from '../constants'
 import styles from './productDetails.style'
 
 const ProductDetails = ({navigation}) => {
+  const route= useRoute();
+  const {item}= route.params;
+  
   const [count,setCount]=useState(1)
   
   const increment = () => {
@@ -29,14 +33,14 @@ const ProductDetails = ({navigation}) => {
     </View>
     <ScrollView showsVerticalScrollIndicator={false}>
     <Image 
-    source={{uri:"https://images.unsplash.com/photo-1580870069867-74c57ee1bb07?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}} 
+    source={{uri: item.imageurl}} 
     style={styles.image}/>
     
     <View style={styles.details}>
     <View style={styles.titleRow}>
-      <Text style={styles.title}>Product</Text>
+      <Text style={styles.title}>{item.title}</Text>
       <View style={styles.priceWrapper}>
-      <Text style={styles.price}>$99.99</Text>
+      <Text style={styles.price}>${item.price}</Text>
       </View>
     </View>
 
@@ -58,7 +62,7 @@ const ProductDetails = ({navigation}) => {
           <SimpleLineIcons
           name='minus' size={20}/>
         </TouchableOpacity>
-          <Text style={styles.ratingText}> {count} </Text>
+          <Text style={styles.ratingText}>{count}</Text>
         <TouchableOpacity onPress={increment}>
           <SimpleLineIcons
           name='plus' size={20}/>
@@ -68,18 +72,37 @@ const ProductDetails = ({navigation}) => {
     </View>
     <View style={styles.discriptionWrapper}>
       <Text style={styles.discription}>Description</Text>
-      <Text style={styles.discriptionText}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vel condimentum lorem. Curabitur auctor, lorem sed iaculis aliquam, diam quam facilisis lectus, at posuere dolor lectus ut urna. Vestibulum ultrices urna sed pulvinar fermentum. Nullam posuere sit amet diam nec imperdiet. Donec est nunc, malesuada nec viverra quis, malesuada a elit. Pellentesque sapien erat, dapibus ac eros et, tristique dignissim dolor. Aliquam blandit quis lorem in volutpat. Ut ullamcorper elit quam, et consectetur quam mollis consectetur. Praesent eu sapien pretium, placerat leo et, facilisis nisi. Integer sed est feugiat, porta dui nec, lobortis quam. Ut orci sem, ultrices vel leo quis, tempor efficitur orci. Praesent sollicitudin id odio vitae tempor.</Text>
+      <Text style={styles.descText}>{item.description}</Text>
     </View>
-    <View style={{marginBottom:SIZES.small}}>
-      <View style={styles.location}>
-    <Ionicons name="location-outline" size={20} />
-      </View>
+
+   
+      <View style={{marginBottom:SIZES.small}}>
+        <View style={styles.location}>
+          <View style={{flexDirection:"row"}}>
+            <Ionicons name="location-outline" size={20} />
+            <Text> {item.product_location} </Text>
+          </View>
+
+          <View style={{flexDirection:"row"}}>
+            <MaterialCommunityIcons name="truck-delivery-outline" size={20} />
+            <Text>  Free Delivery  </Text>
+          </View>
+        </View>
     </View>
+
+    <View style={styles.cartRow}>
+        <TouchableOpacity onPress={()=>{}} style={styles.cartBtn}>
+        <Text style={styles.cartTitle}>BUY NOW</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={()=>{}} style={styles.addCart}>
+        <Fontisto name="shopping-bag" size={22} color={COLORS.lightWhite}/>
+        </TouchableOpacity>
     </View>
-    </ScrollView>
     </View>
     
-  )
-}
+    </ScrollView>
+    </View>
+  );
+};
 
-export default ProductDetails
+export default ProductDetails;

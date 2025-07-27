@@ -3,9 +3,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback, useEffect } from 'react';
-import { ActivityIndicator, View, Text } from 'react-native';
 import BottomTabNavigation from './navigation/BottomTabNavigation';
-import { Cart, ProductDetails } from './screens';
+import { Cart, ProductDetails, Search, NewRivals } from './screens';
 
 
 const Stack = createNativeStackNavigator();
@@ -32,18 +31,12 @@ export default function App() {
   }, [fontsLoaded]);
 
   if (!fontsLoaded) {
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <ActivityIndicator size="large" color="#000" />
-        <Text>Loading fonts...</Text>
-      </View>
-    );
+    return null;
   }
 
   return (
-    <View style={{flex: 1}} onLayout={onLayoutRootView}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Bottom Navigation">
+        <Stack.Navigator>
           <Stack.Screen
             name='Bottom Navigation'
             component={BottomTabNavigation}
@@ -59,8 +52,19 @@ export default function App() {
             component={ProductDetails}
             options= {{headerShown:false}}
           />
+          <Stack.Screen
+            name='Search'
+            component={Search}
+            options= {{headerShown:false}}
+          />
+          <Stack.Screen
+            name='ProductList'
+            component={NewRivals}
+            options= {{headerShown:false}}
+          />
+
         </Stack.Navigator>
       </NavigationContainer>
-    </View>
+    
   );
 }

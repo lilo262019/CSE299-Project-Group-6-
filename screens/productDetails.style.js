@@ -20,18 +20,17 @@ const styles = StyleSheet.create({
     resizeMode:"cover"
    },
    details:{
-    flex: 1,
+    marginTop:-SIZES.large,
     backgroundColor:COLORS.lightWhite,
     width:SIZES.width,
     borderTopLeftRadius:SIZES.medium,
     borderTopRightRadius:SIZES.medium,
-    paddingTop: SIZES.large,
-    paddingHorizontal: SIZES.medium,
    },
    titleRow:{
-    paddingHorizontal:20,
+    marginHorizontal:20,
+    paddingBottom:SIZES.small,
     flexDirection:"row",
-    alignItems:"flex-start",
+    alignItems:"center",
     justifyContent:"space-between",
     width:SIZES.width-44,
     top:20,
@@ -69,7 +68,8 @@ const styles = StyleSheet.create({
    ratingText:{
       color:COLORS.gray,
       fontFamily:"medium",
-      marginLeft:5
+      marginLeft:5,
+      paddingHorizontal:SIZES.xsmall
    },
    discriptionWrapper:{
       marginTop:SIZES.large*2,
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
       fontFamily:"medium",
       fontSize:SIZES.large-2,
    },
-   discriptionText:{
+   descText:{
       fontFamily:"regular",
       fontSize:SIZES.small,
       textAlign:"justify",
@@ -93,6 +93,35 @@ const styles = StyleSheet.create({
       padding:5,
       borderRadius:SIZES.large,
       marginHorizontal:12
+   },
+   cartRow:{
+      paddingBottom:SIZES.small,
+      flexDirection:"row",
+      alignItems:"center",
+      justifyContent:"space-between",
+      width:SIZES.width,
+   },
+   cartBtn:{
+      width:SIZES.width*0.7,
+      backgroundColor:COLORS.black,
+      padding: SIZES.small/2,
+      borderRadius:SIZES.large,
+      marginLeft:12
+   },
+   cartTitle:{
+      marginLeft:SIZES.small,
+      fontFamily:"bold",
+      fontSize:SIZES.medium,
+      color:COLORS.lightWhite
+   },
+   addCart:{
+      width:37,
+      height:37,
+      borderRadius:50,
+      margin:SIZES.small,
+      backgroundColor:COLORS.black,
+      alignItems:"center",
+      justifyContent:"center",
    }
 })
 

@@ -19,14 +19,13 @@ const Welcome = () => {
 
 
       <View style={styles.searchContainer}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>navigation.navigate("Search")}>
               <Feather name="search" size={24} style={styles.searchIcon}/>
             </TouchableOpacity>
            <View style={styles.searchWrapper}>
             <TextInput 
             style={styles.searchInput} 
-            value=""
-            onPressIn={()=>navigation.navigate("Search")}
+            onFocus={()=>navigation.navigate("Search")}
             placeholder="What are you looking..."/>       
             </View>
             <View>
