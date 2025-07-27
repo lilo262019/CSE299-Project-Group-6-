@@ -31,7 +31,18 @@ const styles= StyleSheet.create({
     textContainer:{
         flex:1,
         marginHorizontal: SIZES.medium,
-    }
+    },
+    productTitle:{
+        fontFamily:"bold",
+        fontSize:SIZES.medium,
+        color: COLORS.primary,
+    },
+    supplier:{
+        fontFamily:"regular",
+        fontSize:SIZES.small+2,
+        color: COLORS.gray,
+        marginTop:3,
+    },
 })
 
 export default styles;
