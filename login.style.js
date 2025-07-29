@@ -1,5 +1,5 @@
-import { StyleSheet } from 'react-native';
-import { COLORS, SIZES } from '../constants';
+import { StyleSheet } from "react-native";
+import { COLORS, SIZES } from "../constants";
 
 const styles = StyleSheet.create({
   cover: {
@@ -9,11 +9,40 @@ const styles = StyleSheet.create({
     marginBottom: SIZES.xxLarge,
   },
   title: {
-    fontFamily: 'bold',
+    fontFamily: "bold",
     fontSize: SIZES.xLarge,
     color: COLORS.primary,
-    textAlign: 'center', // Use textAlign for text, not alignItems
+    textAlign: "center", // Fix: use textAlign for text, not alignItems
     marginBottom: SIZES.xxLarge,
+  },
+  wrapper: {
+    marginBottom: 20,
+  },
+  label: {
+    fontFamily: "regular",
+    fontSize: SIZES.xSmall,
+    marginBottom: 5,
+    marginEnd: 5,
+    textAlign: "right",
+  },
+  inputWrapper: (borderColor) => ({
+    borderColor: borderColor,
+    backgroundColor: COLORS.lightWhite,
+    borderWidth: 1,
+    height: 50,
+    borderRadius: 12,
+    flexDirection: 'row',
+    paddingHorizontal: 15,
+    alignItems: 'center',
+  }),
+  iconStyle: {
+    marginRight: 10,
+  },
+  errorMessage: {
+    color: COLORS.red,
+    marginTop: 5,
+    marginLeft: 15,
+    fontSize: SIZES.xSmall,
   },
 });
 
