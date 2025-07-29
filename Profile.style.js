@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
   },
   optionButton: {
     paddingVertical: 15,
-    borderBottomColor: COLORS.lightGray ?? "#eee",
+    borderBottomColor: COLORS.lightGray ? COLORS.lightGray : "#eee",
     borderBottomWidth: 1,
   },
   optionText: {

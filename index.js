@@ -1,11 +1,22 @@
-const express = require('express')
-const dotenv = require("dotenv")
-const mongoose = require('mongoose')
-const app = express()
-const port = 3000
+import Cart from './Cart';
+import Favourites from './Favourites';
+import Home from './Home';
+import LoginPage from './LoginPage';
+import NewRivals from './NewRivals';
+import Orders from './Orders';
+import ProductDetails from './ProductDetails';
+import Profile from './profile'; // Use lowercase 'profile' if your file is 'profile.jsx'
+import Search from './Search';
 
-dotenv.config()
-mongoose.connect(process.env.MONGO_URL).then(()=>console.log("db connected")).catch((err)=>console.log(err))
+export {
+    Cart,
+    Favourites,
+    Home,
+    LoginPage,
+    NewRivals,
+    Orders,
+    ProductDetails,
+    Profile,
+    Search
+};
 
-app.get('/', (req, res) => res.send('Aureva World!'))
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
