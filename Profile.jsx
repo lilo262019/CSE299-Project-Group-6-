@@ -1,15 +1,9 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  Alert,
-  ScrollView,
-  StyleSheet,
-} from "react-native";
+import { View, Text, TouchableOpacity, Image, Alert, ScrollView, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { COLORS, SIZES, images } from "../../../constants";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 
 const Profile = () => {
   const router = useRouter();
@@ -69,8 +63,22 @@ const Profile = () => {
         />
         <Text style={styles.username}>{user?.username || "Guest User"}</Text>
       </View>
-
       <View style={styles.optionContainer}>
+        <TouchableOpacity style={styles.optionButton} onPress={() => router.navigate("Favorites")}>
+          <MaterialCommunityIcons name="heart-outline" color={COLORS.primary} size={24} />
+          <Text style={styles.optionText}>Favorites</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.optionButton} onPress={() => router.navigate("Orders")}>
+          <MaterialCommunityIcons name="truck-delivery" color={COLORS.primary} size={24} />
+          <Text style={styles.optionText}>Orders</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.optionButton} onPress={() => router.navigate("Cart")}>
+          <SimpleLineIcons name="bag" color={COLORS.primary} size={24} />
+          <Text style={styles.optionText}>Cart</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity style={styles.optionButton} onPress={toggleDarkTheme}>
           <Text style={styles.optionText}>Dark Theme</Text>
         </TouchableOpacity>
@@ -79,10 +87,7 @@ const Profile = () => {
           <Text style={styles.optionText}>Clear Cache</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.optionButton}
-          onPress={goToOnlineAccount}
-        >
+        <TouchableOpacity style={styles.optionButton} onPress={goToOnlineAccount}>
           <Text style={styles.optionText}>Online Account</Text>
         </TouchableOpacity>
 
@@ -95,9 +100,7 @@ const Profile = () => {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.optionButton} onPress={deleteAccount}>
-          <Text style={[styles.optionText, { color: "red" }]}>
-            Delete Account
-          </Text>
+          <Text style={[styles.optionText, { color: "red" }]}>Delete Account</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -129,10 +132,13 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     borderBottomColor: COLORS.lightGray,
     borderBottomWidth: 1,
+    flexDirection: "row",
+    alignItems: "center",
   },
   optionText: {
     fontSize: SIZES.medium,
     color: COLORS.primary,
+    marginLeft: 10,
   },
 });
 
