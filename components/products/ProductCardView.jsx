@@ -12,11 +12,11 @@ const ProductCardView = ({item}) => {
       <View style={styles.container}>
         <View style={styles.imageContainer}>
           <Image
-            source={{ uri: item.imageurl,
+            source={{ uri: item.imageUrl,
             }}
             style={styles.image}
           />
-
+        </View>
           <View style={styles.details}>
             <Text style={styles.title} numberOfLines={1}>
               {item.title}
@@ -24,13 +24,11 @@ const ProductCardView = ({item}) => {
             <Text style={styles.supplier} numberOfLines={1}>
               {item.supplier}
             </Text>
-            <Text style={styles.price}>${item.price}</Text>
+            <Text style={styles.price}>৳{item.price}</Text>
           </View>
-
           <TouchableOpacity style={styles.addBtn}>
             <Ionicons name="add-circle" size={35} color={COLORS.primary} />
-          </TouchableOpacity>
-        </View>
+          </TouchableOpacity>       
       </View>
     </TouchableOpacity>
   );

@@ -33,14 +33,14 @@ const ProductDetails = ({navigation}) => {
     </View>
     <ScrollView showsVerticalScrollIndicator={false}>
     <Image 
-    source={{uri: item.imageurl}} 
+    source={{uri: item.imageUrl}} 
     style={styles.image}/>
     
     <View style={styles.details}>
     <View style={styles.titleRow}>
       <Text style={styles.title}>{item.title}</Text>
       <View style={styles.priceWrapper}>
-      <Text style={styles.price}>${item.price}</Text>
+      <Text style={styles.price}>৳{item.price}</Text>
       </View>
     </View>
 

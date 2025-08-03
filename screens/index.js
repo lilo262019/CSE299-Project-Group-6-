@@ -4,5 +4,9 @@ import Profile from './Profile';
 import Search from './Search';
 import ProductDetails from './ProductDetails';
 import NewRivals from './NewRivals';
+import LoginPage from './LoginPage';
+import Favourites from './Favourites';
+import Orders from './Orders';
+import SignUp from './SignUp';
 
-export { Cart, Home, Profile, Search, ProductDetails, NewRivals };
+export { Cart, Home, Profile, Search, ProductDetails, NewRivals, LoginPage, Favourites, Orders, SignUp };

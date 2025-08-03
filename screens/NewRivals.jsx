@@ -1,4 +1,4 @@
-import { TouchableOpacity, Text, View } from 'react-native'
+import { TouchableOpacity, Text, View, ScrollView } from 'react-native'
 import React from 'react'
 import {Ionicons} from '@expo/vector-icons'
 import styles from './newRivals.style'
@@ -9,6 +9,7 @@ import ProductList from '../components/products/ProductList'
 
 const NewRivals = ({navigation}) => {
   return (
+    <ScrollView>
     <SafeAreaView style={styles.container}>
         <View style={styles.wrapper}>
             <View style={styles.upperRow}>
@@ -22,6 +23,7 @@ const NewRivals = ({navigation}) => {
             <ProductList/>
         </View>
     </SafeAreaView>
+    </ScrollView>
   )
 }
 

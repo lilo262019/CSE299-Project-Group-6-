@@ -5,7 +5,7 @@ export default function ProductCard({ product, onPress }) {
   return (
     <TouchableOpacity onPress={() => onPress(product)} style={styles.card}>
       <Text style={styles.name}>{product.name}</Text>
-      <Text style={styles.price}>${product.price}</Text>
+      <Text style={styles.price}>৳{product.price}</Text>
     </TouchableOpacity>
   );
 }

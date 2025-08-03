@@ -3,12 +3,11 @@ import { COLORS, SIZES } from '../../constants';
 import ProductCardView from './ProductCardView';
 import useFetch from '../../hooks/useFetch';
 import React from 'react';
-import styles from './productCardView.style';
+import styles from './productRow.style';
 
 
 const ProductRow = () => {
     const {data, isLoading, error}= useFetch();
-    const products=[1,2,3,4];
   return (
    <View style={styles.container}>
     {isLoading ?(
@@ -21,10 +20,11 @@ const ProductRow = () => {
       keyExtractor={(item)=>item._id}
       renderItem={({item})=> <ProductCardView item={item}/>}
       horizontal
-      contentContainerStyle={{columnGap: SIZES.medium}}
+      contentContainerStyle={{columnGap: SIZES.small}}
    />
    )}
    </View>
+   
   );
 };
 
