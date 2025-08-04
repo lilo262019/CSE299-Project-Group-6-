@@ -11,10 +11,10 @@ const fetchOrders = () => {
     const fetchData = async() => {
         setLoader(true);
         const token = await AsyncStorage.getItem('token');
-        //console.log("Token from AsyncStorage:", token);
+     
 
         try {
-            const endpoint = 'http://localhost:3000/api/orders';
+            const endpoint = 'http://192.168.0.101:3000/api/orders';
 
             const headers = {
                 'Content-Type': 'application/json',

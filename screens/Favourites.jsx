@@ -75,7 +75,6 @@ const deleteFavorites = async(product) => {
 
       <FlatList 
         data={favData}
-        // display the title of the favorites
         renderItem={({ item }) => (
         <View style={styles.favContainer}>
           <View style={styles.imageContainer}>
@@ -88,7 +87,7 @@ const deleteFavorites = async(product) => {
           <View style={styles.textContainer}>
               <Text style={styles.fav}>{item.title}</Text>
               <Text style={styles.supplier}>{item.supplier}</Text>
-              <Text style={styles.price}>$ {item.price}</Text>
+              <Text style={styles.price}>৳{item.price}</Text>
 
           </View>
 

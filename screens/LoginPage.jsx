@@ -43,7 +43,7 @@ const LoginPage = ({navigation}) => {
       const login = async(values) => {
         setLoader(true)
         try {
-            const endpoint = "http://192.168.0.233:3000/api/login"
+            const endpoint = "http://192.168.0.101:3000/api/login"
             const data = values;
 
             const response = await axios.post(endpoint, data)
@@ -104,7 +104,7 @@ const LoginPage = ({navigation}) => {
                 style={styles.cover}
                 />
 
-                <Text style={styles.title}>Best Ecommerce App In Israel</Text>
+                <Text style={styles.title}>#1 Cosmetic App in Bangladesh</Text>
                 
                 <Formik
                 initialValues={{email: '', password: ''}}

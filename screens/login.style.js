@@ -3,17 +3,17 @@ import {COLORS, SIZES} from "../constants/index";
 
 const styles = StyleSheet.create({
     cover:{
-        height: SIZES.height/2.4,
-        width: SIZES.width-60,
+        height: SIZES.height/3,
+        width: SIZES.width-20,
         resizeMode: "contain",
-        marginBottom: SIZES.xxLarge
+        marginBottom: SIZES.xLarge
     },
     title:{
         fontFamily: "bold",
-        fontSize: SIZES.xLarge,
+        fontSize: SIZES.xLarge+5,
         color: COLORS.primary,
         alignItems: "center",
-        marginBottom: SIZES.xxLarge
+        marginBottom: SIZES.xLarge
     },
     wrapper: {
         marginBottom: 20
@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
     registration:{
         marginTop: 20,
         textAlign: "center",
+        fontFamily: "semibold",
 
     },
     

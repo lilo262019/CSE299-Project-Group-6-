@@ -13,7 +13,7 @@ const fetchCart = () => {
         const token = await AsyncStorage.getItem('token');
        
         try {
-            const endpoint = 'http://localhost:3000/api/cart/find';
+            const endpoint = 'http://192.168.0.101:3000/api/carts/find';
 
             const headers = {
                 'Content-Type': 'application/json',
@@ -23,12 +23,9 @@ const fetchCart = () => {
            const response = await axios.get(endpoint, {headers});
            const cartProducts = response.data[0].products;
 
-
-        // Update the data state with cartProducts
             if(cartProducts){
                 setData(cartProducts);
             }
-            //setError(null);
             setLoader(false);
 
         } catch (error) {
@@ -39,7 +36,6 @@ const fetchCart = () => {
     }
 
     useEffect(() => {
-        //console.log("Fetching data...");
         fetchData();
 
     }, []);

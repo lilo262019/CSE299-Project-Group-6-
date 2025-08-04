@@ -16,7 +16,7 @@ const OrderTile = ({item}) => {
         <View style={styles.textContainer}>
             <Text style={styles.productText} numberOfLines={1}>{item.productId.title}</Text>
             <Text style={styles.supplya} numberOfLines={1}>{item.productId.supplier}</Text>
-            <Text style={styles.supplya} numberOfLines={1}>{item.productId.price}</Text>
+            <Text style={styles.supplya} numberOfLines={1}>৳{item.productId.price}</Text>
 
         </View>
 

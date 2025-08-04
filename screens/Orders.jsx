@@ -59,7 +59,7 @@ const Orders = ({ navigation }) => {
             <View style={styles.textContainer}>
               <Text style={styles.orderTitle}>{item.title}</Text>
               <Text style={styles.orderSupplier}>{item.supplier}</Text>
-              <Text style={styles.orderPrice}>$ {item.price}</Text>
+              <Text style={styles.orderPrice}>৳{item.price}</Text>
             </View>
 
                {/* Blue Indicator */}

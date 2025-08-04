@@ -43,12 +43,12 @@ const SignUp = ({navigation}) => {
       const registerUser = async(values) => {
         setLoader(true);
         try {
-            const endpoint = 'http://localhost:3000/api/register';
+            const endpoint = 'http://local:3000/api/register';
             const data = values;
 
             const response = await axios.post(endpoint, data);
             if(response.status === 201){
-                navigation.replace('Login')
+                navigation.replace('LoginPage')
             }
         } catch (error) {
             console.log(error);
@@ -68,7 +68,7 @@ const SignUp = ({navigation}) => {
             marginBottom: SIZES.xxLarge}}
             />
 
-            <Text style={styles.title}>Best Ecommerce App In Israel</Text>
+            <Text style={styles.title}>Welcome to Aureva!</Text>
             
             <Formik
             initialValues={{email: '', password: '', location: "", username: ""}}

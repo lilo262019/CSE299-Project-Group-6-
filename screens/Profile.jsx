@@ -1,210 +1,180 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native'
-import React, {useState, useEffect} from 'react'
-import style from './profile.style';
-import { StatusBar } from 'expo-status-bar';
+import { View, Text, TouchableOpacity, Alert, Image, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import styles from './profile.style';
 import { COLORS } from '../constants';
-import {AntDesign, MaterialCommunityIcons, SimpleLineIcons} from "@expo/vector-icons"
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
+import { StatusBar } from 'react-native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
-const Profile = ({navigation}) => {
-  const [userData, setUserData] = useState(null);
-  const [userLogin, setUserLogin] = useState(false);
+const Profile = () => {
+  const navigation = useNavigation();
+  const [user, setUser] = useState(null);
+  const [userData] = useState(null);
+  const [userLogin] = useState(false);
 
   useEffect(() => {
-    checkExistingUser();
-  },[]);
+    const fetchUserData = async () => {
+      const id = await AsyncStorage.getItem('id');
+      const token = await AsyncStorage.getItem('token');
 
-  const checkExistingUser = async () => {
-    const id = await AsyncStorage.getItem('id')
-    const useId = `user${JSON.parse(id)}`;
-
-    try {
-      const currentUser = await AsyncStorage.getItem(useId);
-
-      if(currentUser !== null){
-        const parsedData = JSON.parse(currentUser)
-        setUserData(parsedData)
-        setUserLogin(true)
-      } else{
-        navigation.navigate('LoginPage')
+      try {
+        const res = await axios.get(`http://192.168.0.101:3000/api/users/find/${JSON.parse(id)}`, {
+          headers: {
+            token: `Bearer ${JSON.parse(token)}`
+          }
+        });
+        setUser(res.data);
+      } catch (error) {
+        console.log("Fetching user failed", error);
       }
-    } catch (error) {
-        console.log("Error retrieving the data", error);
-    }
+    };
+    fetchUserData();
+  }, []);
+
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('token');
+    navigation.replace("LoginPage");
   };
 
-  const userLogout = async() => {
-    const id = await AsyncStorage.getItem('id')
-    const useId = `user${JSON.parse(id)}`;
+  const handleClearCache = async () => {
+    await AsyncStorage.clear();
+    navigation.replace("Bottom Navigation");
+  };
 
-    try {
-      await AsyncStorage.multiRemove([useId, 'id'])
-      navigation.replace('Bottom Navigation')
-    } catch (error) {
-        console.log("Error retrieving the data", error);
-    }
-  }
-
-  const cacheClear = async() => {
-    const id = await AsyncStorage.getItem('id')
-    const userId = `favorites${JSON.parse(id)}`;
-
-    try {
-      await AsyncStorage.removeItem(userId)
-      navigation.replace('Bottom Navigation')
-    } catch (error) {
-        console.log("Error retrieving the data", error);
-    }
-  }
-
-  const logout = () => {
-    Alert.alert(
-      "Log Out",
-      "Are you sure you want to log out?",
-      [
-        {
-          text: "Cancel", onPress: ()=> console.log("Cancel pressed")
-        },
-        {
-          text: "Continue", onPress: ()=> userLogout()
-        },
-        {defaultIndex: 1}
-      ]
-    )
-  }
-
-  const clearCache = () => {
-    Alert.alert(
-      "Clear Cache",
-      "Are you sure you want delete all saved data on your device?",
-      [
-        {
-          text: "Cancel", onPress: ()=> console.log("Cancel clear cache")
-        },
-        {
-          text: "Continue", onPress: ()=> cacheClear()
-        },
-        {defaultIndex: 1}
-      ]
-    )
-  }
-
-  const deleteAccount = () => {
+  const confirmDeleteAccount = () => {
     Alert.alert(
       "Delete Account",
       "Are you sure you want to delete your account?",
       [
-        {
-          text: "Cancel", onPress: ()=> console.log("Cancel delete account")
-        },
-        {
-          text: "Continue", onPress: ()=> console.log("Continue delete account")
-        },
-        {defaultIndex: 1}
+        { text: "Cancel", style: "cancel" },
+        { text: "Delete", onPress: () => handleDeleteAccount() }
       ]
-    )
-  }
-  
+    );
+  };
+
+  const handleDeleteAccount = async () => {
+    const id = await AsyncStorage.getItem("id");
+    const token = await AsyncStorage.getItem("token");
+
+    try {
+      await axios.delete(`http://localhost:3000/api/users/${JSON.parse(id)}`, {
+        headers: {
+          token: `Bearer ${JSON.parse(token)}`
+        }
+      });
+
+      await AsyncStorage.multiRemove(['id', 'token']);
+      navigation.replace("LoginPage");
+    } catch (error) {
+      console.log("Delete failed", error);
+    }
+  };
+
   return (
-    <View style={style.container}>
-       <View style={style.container}>
-          <StatusBar backgroundColor={COLORS.gray}/>
+    <ScrollView>
+      <View style={styles.container}>
+       <View style={styles.container}>
+          <StatusBar backgroundColor={COLORS.lightWhite}/>
           <View style={{width: '100%'}}>
             <Image 
               source={require('../assets/images/background.png')}
-              style={style.cover}
+              style={styles.cover}
             />
           </View>
-          <View style={style.profileContainer}>
+          <View style={styles.profileContainer}>
             <Image 
                 source={require('../assets/images/profile.png')}
-                style={style.profile}
+                style={styles.profile}
               />
-              <Text style={style.name}>
+              <Text style={styles.name}>
                 {userLogin === true ? userData.username : "Please Log In Into Your Account"}
               </Text>
 
 
               {userLogin === false ? (
                 <TouchableOpacity onPress={()=>navigation.navigate('LoginPage')}>
-                  <View style={style.loginBtn}>
-                    <Text style={style.menuText}>LOG IN</Text>
+                  <View style={styles.loginBtn}>
+                    <Text style={styles.menuText}>LOG IN </Text>
                   </View>
                 </TouchableOpacity>
               ) : (
-                <View style={style.loginBtn}>
-                  <Text style={style.menuText}>{userData.email}  </Text>
+                <View style={styles.loginBtn}>
+                  <Text style={styles.menuText}>{userData.email}  </Text>
                   </View>
               )}
 
               {userLogin === false ? (
                   <View></View>
               ) : (
-                  <View style={style.menuWrapper}>
+                  <View style={styles.menuWrapper}>
                     <TouchableOpacity onPress={() => navigation.navigate('Favourites')}>
-                        <View style={style.menuItem(0.2)}>
+                        <View style={styles.menuItem(0.2)}>
                             <MaterialCommunityIcons 
                             name="heart-outline"
                             color={COLORS.primary}
                             size={24}
                             />
-                            <Text style={style.menuText}>Favorites</Text>
+                            <Text style={styles.menuText}>Favorites</Text>
                         </View>
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={() => navigation.navigate('Orders')}>
-                        <View style={style.menuItem(0.5)}>
+                        <View style={styles.menuItem(0.5)}>
                             <MaterialCommunityIcons 
                             name="truck-delivery-outline"
                             color={COLORS.primary}
                             size={24}
                             />
-                            <Text style={style.menuText}>Orders</Text>
+                            <Text style={styles.menuText}>Orders</Text>
                         </View>
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={() => navigation.navigate('Cart')}>
-                        <View style={style.menuItem(0.5)}>
+                        <View style={styles.menuItem(0.5)}>
                             <SimpleLineIcons 
                             name="bag"
                             color={COLORS.primary}
                             size={24}
                             />
-                            <Text style={style.menuText}>Cart</Text>
+                            <Text style={styles.menuText}>Cart</Text>
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() =>clearCache()}>
-                        <View style={style.menuItem(0.5)}>
+                    <TouchableOpacity onPress={() =>handleClearCache()}>
+                        <View style={styles.menuItem(0.5)}>
                             <MaterialCommunityIcons 
                             name="cached"
                             color={COLORS.primary}
                             size={24}
                             />
-                            <Text style={style.menuText}>Clear Cache</Text>
+                            <Text style={styles.menuText}>Clear Cache</Text>
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => deleteAccount()}>
-                        <View style={style.menuItem(0.5)}>
+                    <TouchableOpacity onPress={() => confirmDeleteAccount()}>
+                        <View style={styles.menuItem(0.5)}>
                             <AntDesign 
                             name="deleteuser"
                             color={COLORS.primary}
                             size={24}
                             />
-                            <Text style={style.menuText}>Delete Account</Text>
+                            <Text style={styles.menuText}>Delete Account</Text>
                         </View>
                     </TouchableOpacity>
 
 
-                    <TouchableOpacity onPress={() => logout()}>
-                        <View style={style.menuItem(0.5)}>
+                    <TouchableOpacity onPress={() => handleLogout()}>
+                        <View style={styles.menuItem(0.5)}>
                             <AntDesign 
                             name="logout"
                             color={COLORS.primary}
                             size={24}
                             />
-                            <Text style={style.menuText}>Log Out</Text>
+                            <Text style={styles.menuText}>Log Out</Text>
                         </View>
                     </TouchableOpacity>
 
@@ -213,8 +183,8 @@ const Profile = ({navigation}) => {
           </View>
        </View>
     </View>
-  )
-}
+    </ScrollView>
+  );
+};
 
-export default Profile
-
+export default Profile;
