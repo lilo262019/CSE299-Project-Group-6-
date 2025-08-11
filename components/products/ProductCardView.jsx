@@ -26,7 +26,7 @@ const ProductCardView = ({item}) => {
             </Text>
             <Text style={styles.price}>৳{item.price}</Text>
           </View>
-          <TouchableOpacity style={styles.addBtn}>
+          <TouchableOpacity style={styles.addBtn} onPress={() => navigation.navigate("ProductDetails", {item})}>
             <Ionicons name="add-circle" size={35} color={COLORS.primary} />
           </TouchableOpacity>       
       </View>

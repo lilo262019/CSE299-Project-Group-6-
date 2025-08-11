@@ -1,7 +1,8 @@
 import { Feather, Ionicons } from '@expo/vector-icons';
-import { TouchableOpacity, View, TextInput, Image, Text } from 'react-native';
+import { TouchableOpacity, View, TextInput, Image, Text, Platform } from 'react-native';
 import { FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { COLORS, SIZES } from "../constants";
 import React, { useState } from 'react';
 import styles from './Search.Style';
@@ -11,13 +12,15 @@ import SearchTile from '../components/products/SearchTile';
 const Search = () => {
   const [searchKey, setSearchKey] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const tabBarHeight = useBottomTabBarHeight();
 
   const handleSearch = async () => {
     const trimmedKey = searchKey.trim();
     if (!trimmedKey) return;
 
     try {
-      const response = await axios.get(`http://192.168.0.233:3000/api/products/search/${trimmedKey}`);
+      const baseUrl = Platform.OS === 'web' ? 'http://localhost:3000' : 'http://10.0.2.2:3000';
+      const response = await axios.get(`${baseUrl}/api/products/search/${trimmedKey}`);
       console.log('Fetched data:', response.data);
       setSearchResults(response.data);
     } catch (error) {
@@ -65,6 +68,7 @@ const Search = () => {
           keyExtractor={(item) => item._id || item.id} 
           renderItem={({ item }) => <SearchTile item={item} />}
           style={{ marginHorizontal: 12}}
+          contentContainerStyle={{ paddingBottom: tabBarHeight + 20 }}
         />
       )}
     </SafeAreaView>

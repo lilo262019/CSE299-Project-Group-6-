@@ -1,4 +1,5 @@
-import { ScrollView, Text, View, TouchableOpacity, Image, TextInput, Alert } from 'react-native'
+import { ScrollView, Text, View, TouchableOpacity, Image, TextInput, Platform } from 'react-native'
+import { showAlert } from '../components/showAlert';
 import React, {useState} from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from './login.style';
@@ -8,6 +9,7 @@ import * as Yup from 'yup';
 import {MaterialCommunityIcons, Ionicons} from "@expo/vector-icons"
 import { COLORS, SIZES } from '../constants';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const validationSchema = Yup.object().shape({
     password: Yup.string()
@@ -20,12 +22,12 @@ const validationSchema = Yup.object().shape({
 const SignUp = ({navigation}) => {
 
     const [loader, setLoader] = useState(false);
-    const [obsecureText, setObsecureText] = useState(false);
+    const [obsecureText, setObsecureText] = useState(true);
 
     
 
     const inValidForm = () => {
-        Alert.alert(
+    showAlert(
           "Invalid Form",
           "Please provide all required fields",
           [
@@ -43,15 +45,113 @@ const SignUp = ({navigation}) => {
       const registerUser = async(values) => {
         setLoader(true);
         try {
-            const endpoint = 'http://local:3000/api/register';
+            const baseUrl = Platform.OS === 'web' ? 'http://localhost:3000' : 'http://10.0.2.2:3000';
+            const endpoint = `${baseUrl}/api/register`;
             const data = values;
 
+            console.log('Registering user with data:', { ...data, password: '***' });
+            console.log('Making request to:', endpoint);
+            console.log('Full request data:', data);
+
             const response = await axios.post(endpoint, data);
+            console.log('Registration response:', response.status, response.data);
+            
             if(response.status === 201){
-                navigation.replace('LoginPage')
+                setLoader(false);
+                
+                try {
+                    console.log('Auto-login after registration...');
+                    const loginData = {
+                        email: data.email,
+                        password: data.password
+                    };
+                    
+                    const loginResponse = await axios.post(`${baseUrl}/api/login`, loginData);
+                    console.log('Auto-login successful:', loginResponse.data);
+                    
+                    if (loginResponse.status === 200) {
+                        const user = loginResponse.data;
+
+                        await AsyncStorage.setItem(`user${user._id}`, JSON.stringify(user));
+                        await AsyncStorage.setItem("id", JSON.stringify(user._id));
+                        await AsyncStorage.setItem("token", JSON.stringify(user.token));
+                        
+                        console.log('User data stored in AsyncStorage');
+ 
+                                                navigation.reset({
+                                                    index: 0,
+                                                    routes: [{ name: 'Profile' }],
+                                                });
+                    }
+                } catch (loginError) {
+                    console.log('Auto-login failed:', loginError);
+
+                    navigation.replace('LoginPage');
+                }
             }
         } catch (error) {
-            console.log(error);
+            setLoader(false);
+            console.log('Registration error:', error);
+            console.log('Error response:', error.response?.data);
+            console.log('Error status:', error.response?.status);
+            
+            if (error.response) {
+
+                const errorMessage = error.response.data?.message || "Registration failed. Please try again.";
+                console.log('Server error message:', errorMessage);
+                
+     
+                let alertTitle = "Registration Error";
+                let userFriendlyMessage = errorMessage;
+                
+                if (error.response.status === 400) {
+                    alertTitle = "Invalid Data";
+                    if (errorMessage.includes("Email already exists")) {
+                        userFriendlyMessage = "This email is already registered. Please use a different email address or try logging in instead.";
+                    } else if (errorMessage.includes("required fields")) {
+                        userFriendlyMessage = "Please fill in all required fields correctly.";
+                    }
+                } else if (error.response.status === 500) {
+                    alertTitle = "Server Error";
+                    userFriendlyMessage = "Something went wrong on our end. Please try again later.";
+                }
+                
+                showAlert(
+                    alertTitle,
+                    userFriendlyMessage,
+                    [
+                        {
+                            text: "OK", 
+                            onPress: () => {}
+                        }
+                    ]
+                );
+            } else if (error.request) {
+                console.log('Network error - no response received');
+                Alert.alert(
+                    "Network Error",
+                    "Unable to connect to server. Please check your internet connection and ensure the backend server is running.",
+                    [
+                        {
+                            text: "OK", 
+                            onPress: () => {}
+                        }
+                    ]
+                );
+            } else {
+                // Other errors
+                console.log('Other error:', error.message);
+                Alert.alert(
+                    "Error",
+                    "An unexpected error occurred. Please try again.",
+                    [
+                        {
+                            text: "OK", 
+                            onPress: () => {}
+                        }
+                    ]
+                );
+            }
         }
       } 
 
@@ -63,7 +163,7 @@ const SignUp = ({navigation}) => {
             <Image 
             source={require('../assets/images/loginpg.png')}
             style={{ height: SIZES.height/3,
-            width: SIZES.width-60,
+            width: SIZES.width-30,
             resizeMode: "contain",
             marginBottom: SIZES.xxLarge}}
             />
@@ -91,12 +191,15 @@ const SignUp = ({navigation}) => {
                         <TextInput 
                             placeholder='Choose Your Username'
                             onFocus={() => {setFieldTouched('username')}}
-                            onBlur={() => {setFieldTouched('username', '')}}
+                            onBlur={() => {handleBlur('username')}}
                             value={values.username}
                             onChangeText={handleChange('username')}
                             autoCapitalize='none'
                             autoCorrect={false}
                             style={{flex:1}}
+                            id="signup-username"
+                            name="username"
+                            autoComplete="username"
                         />
                     </View>
 
@@ -118,12 +221,15 @@ const SignUp = ({navigation}) => {
                         <TextInput 
                             placeholder='Enter Email'
                             onFocus={() => {setFieldTouched('email')}}
-                            onBlur={() => {setFieldTouched('email', '')}}
+                            onBlur={() => {handleBlur('email')}}
                             value={values.email}
                             onChangeText={handleChange('email')}
                             autoCapitalize='none'
                             autoCorrect={false}
                             style={{flex:1}}
+                            id="signup-email"
+                            name="email"
+                            autoComplete="email"
                         />
                     </View>
 
@@ -145,12 +251,15 @@ const SignUp = ({navigation}) => {
                         <TextInput 
                             placeholder='Enter Your Location'
                             onFocus={() => {setFieldTouched('location')}}
-                            onBlur={() => {setFieldTouched('location', '')}}
+                            onBlur={() => {handleBlur('location')}}
                             value={values.location}
                             onChangeText={handleChange('location')}
                             autoCapitalize='none'
                             autoCorrect={false}
                             style={{flex:1}}
+                            id="signup-location"
+                            name="location"
+                            autoComplete="address-level2"
                         />
                     </View>
 
@@ -170,20 +279,23 @@ const SignUp = ({navigation}) => {
                             style={styles.iconStyle}
                         />
                         <TextInput 
-                            secureTextEntry={obsecureText}
+                            secureTextEntry={!obsecureText}
                             placeholder='Password'
                             onFocus={() => {setFieldTouched('password')}}
-                            onBlur={() => {setFieldTouched('password', '')}}
+                            onBlur={() => {handleBlur('password')}}
                             value={values.password}
                             onChangeText={handleChange('password')}
                             autoCapitalize='none'
                             autoCorrect={false}
                             style={{flex:1}}
+                            id="signup-password"
+                            name="password"
+                            autoComplete="new-password"
                         />
 
                         <TouchableOpacity onPress={() => {setObsecureText(!obsecureText)}}>
                             <MaterialCommunityIcons 
-                            name={obsecureText ? "eye-outline" : "eye-off-outline"} 
+                            name={obsecureText ? "eye-off-outline" : "eye-outline"} 
                             size={18}
                             />
                         </TouchableOpacity>

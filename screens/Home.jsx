@@ -10,33 +10,35 @@ import ProductRow from '../components/products/ProductRow';
 import styles from './home.style';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useNavigation } from '@react-navigation/native';
+import fetchCart from '../hooks/fetchCart';
 
 const Home = () => {
   const navigation = useNavigation();
   const tabBarHeight = useBottomTabBarHeight();
   const [userData, setUserData] = useState(null);
   const [userLogin, setUserLogin] = useState(false);
+  const { data: cartData, loading: cartLoading, error: cartError, refetch } = fetchCart();
 
- useEffect(() => {
+  useEffect(() => {
     checkExistingUser();
-  },[]);
+  }, []);
 
   const checkExistingUser = async () => {
-    const id = await AsyncStorage.getItem('id')
+    const id = await AsyncStorage.getItem('id');
     const useId = `user${JSON.parse(id)}`;
 
     try {
       const currentUser = await AsyncStorage.getItem(useId);
 
-      if(currentUser !== null){
-        const parsedData = JSON.parse(currentUser)
-        setUserData(parsedData)
-        setUserLogin(true)
-      } 
+      if (currentUser !== null) {
+        const parsedData = JSON.parse(currentUser);
+        setUserData(parsedData);
+        setUserLogin(true);
+      }
     } catch (error) {
-        console.log("Error retrieving the data", error);
+      console.log('Error retrieving the data', error);
     }
-  }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -47,7 +49,7 @@ const Home = () => {
 
           <View style={{ alignItems: "flex-end" }}>
             <View style={styles.cartCount}>
-              <Text style={styles.cartNumber}>0</Text>
+              <Text style={styles.cartNumber}>{cartLoading ? '-' : (cartData && cartData.length ? cartData.length : 0)}</Text>
             </View>
             <TouchableOpacity onPress={() => navigation.navigate('Cart')}>
               <Fontisto name='shopping-bag' size={24} />

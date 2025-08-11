@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useState, useEffect } from "react";
-
+import { Platform } from 'react-native';
 
 const fetchOrders = () => {
     const [data, setData] = useState([]);
@@ -14,7 +14,8 @@ const fetchOrders = () => {
      
 
         try {
-            const endpoint = 'http://192.168.0.101:3000/api/orders';
+            const baseUrl = Platform.OS === 'web' ? 'http://localhost:3000' : 'http://10.0.2.2:3000';
+            const endpoint = `${baseUrl}/api/orders`;
 
             const headers = {
                 'Content-Type': 'application/json',
@@ -23,15 +24,21 @@ const fetchOrders = () => {
 
            const response = await axios.get(endpoint, {headers});
 
-           console.log('RESPONSE DATA:');
+           console.log('Orders response:', response.data);
 
-            setData(response.data)
-
-            //setError(null);
+            if (response.data && Array.isArray(response.data)) {
+                setData(response.data);
+                console.log('Orders loaded:', response.data.length);
+            } else {
+                console.log('No orders data found');
+                setData([]);
+            }
             setLoader(false);
 
         } catch (error) {
+            console.log('Orders fetch error:', error);
             setError(error);
+            setData([]);
         }finally{
             setLoader(false);
         }

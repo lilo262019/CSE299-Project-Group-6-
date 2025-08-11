@@ -1,4 +1,5 @@
-import { ScrollView, Text, View, TouchableOpacity, Image, Alert, SafeAreaView } from 'react-native'
+import { ScrollView, Text, View, TouchableOpacity, Image, SafeAreaView } from 'react-native'
+import { showAlert} from '../components/showAlert';
 import React, {useState, useEffect} from 'react'
 import { useRoute } from '@react-navigation/native'
 import {Ionicons,SimpleLineIcons, MaterialCommunityIcons, Fontisto} from '@expo/vector-icons'
@@ -7,6 +8,7 @@ import { COLORS, SIZES } from '../constants'
 import AddToCart from '../hooks/addToCart'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import WebView from 'react-native-webview'
+import { Alert } from 'react-native'
 
 const ProductDetails = ({navigation}) => {
   const route= useRoute();
@@ -126,55 +128,86 @@ const ProductDetails = ({navigation}) => {
       };
       
 
-    const handlePress = () => {
+    const handlePress = async () => {
         if(!isLoggedIn){
             navigation.navigate('Login')
         } else{
-            addToFavorites();
+            try {
+                const wasFavorite = favorites;
+                await addToFavorites();
+                if (wasFavorite) {
+                    setFavorites(false);
+                    showAlert(
+                      "❤️ Removed from Favorites",
+                      `${item.title} has been removed from your favorites.`,
+                      [{ text: "OK" }]
+                    );
+                  } else {
+                    setFavorites(true);
+                    Alert.alert(
+                      "❤️ Added to Favorites",
+                      `${item.title} has been added to your favorites.`,
+                      [{ text: "OK" }]
+                    );
+                  }
+                } catch (error) {
+                  console.log('Error updating favorites:', error);
+                  Alert.alert(
+                    "Error",
+                    "Failed to update favorites. Please try again.",
+                    [{ text: "OK" }]
+                  );
+                }
         }
     }
 
-    const handleBuy = () => {
+    const handleBuy = async () => {
         if(!isLoggedIn){
             navigation.navigate('Login')
         } else{
-            addToOrders();
-
-            Alert.alert(
-                "Order Created ",
-                "You can check your orders in your profile",
-                [
-                  {
-                    text: "Cancel", onPress: ()=> {}
-                  },
-                  {
-                    text: "Continue", onPress: ()=> navigation.navigate('Profile')
-                  },
-                  {defaultIndex: 1}
-                ]
-              )
-
+            try {
+                await addToOrders();
+                Alert.alert(
+                  "✅ Order Created!",
+                  `${item.title} has been added to your orders. You can check your orders in your profile.`,
+                  [
+                    { text: "Continue Shopping" },
+                    { text: "View Orders", onPress: () => navigation.navigate('Orders') }
+                  ]
+                );
+              } catch (error) {
+                console.log('Error creating order:', error);
+                Alert.alert(
+                  "Error",
+                  "Failed to create order. Please try again.",
+                  [{ text: "OK" }]
+                )
+            }
         }
     }
 
-    const handleCart = () => {
+    const handleCart = async () => {
         if(!isLoggedIn){
             navigation.navigate('Login')
         } else{
-            AddToCart(item._id, count);
-            Alert.alert(
-                "Added To Cart 🛒",
-                "You want to checkout?",
-                [
-                  {
-                    text: "Not yet", onPress: ()=> {}
-                  },
-                  {
-                    text: "Yes", onPress: ()=> navigation.navigate('Cart')
-                  },
-                  {defaultIndex: 1}
-                ]
-              )
+            try {
+                await AddToCart(item._id, count);
+    Alert.alert(
+      "✅ Added to Cart!",
+      `${item.title} has been added to your cart.`,
+      [
+        { text: "Continue Shopping" },
+        { text: "View Cart", onPress: () => navigation.navigate('Cart') }
+      ]
+    );
+  } catch (error) {
+    console.log('Error adding to cart:', error);
+    Alert.alert(
+      "Error",
+      "Failed to add item to cart. Please try again.",
+      [{ text: "OK" }]
+                )
+            }
         }
     }
 
@@ -331,12 +364,31 @@ const ProductDetails = ({navigation}) => {
     </View>
 
     <View style={styles.cartRow}>
-        <TouchableOpacity onPress={()=>handleBuy()} style={styles.cartBtn}>
+      <TouchableOpacity
+        onPress={async () => {
+          if (!isLoggedIn) {
+            navigation.navigate('Login');
+          } else {
+            try {
+              await AddToCart(item._id, count);
+              navigation.navigate('Cart');
+            } catch (error) {
+              console.log('Error adding to cart:', error);
+              Alert.alert(
+                'Error',
+                'Failed to add item to cart. Please try again.',
+                [{ text: 'OK' }]
+              );
+            }
+          }
+        }}
+        style={styles.cartBtn}
+      >
         <Text style={styles.cartTitle}>BUY NOW</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={()=>handleCart()} style={styles.addCart}>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={()=>handleCart()} style={styles.addCart}>
         <Fontisto name="shopping-bag" size={22} color={COLORS.lightWhite}/>
-        </TouchableOpacity>
+      </TouchableOpacity>
     </View>
     </View>
         </View>

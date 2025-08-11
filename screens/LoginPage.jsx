@@ -1,4 +1,5 @@
-import { ScrollView, Text, View, TouchableOpacity, Image, TextInput, Alert } from 'react-native'
+import { ScrollView, Text, View, TouchableOpacity, Image, TextInput, Platform } from 'react-native'
+import { showAlert } from '../components/showAlert';
 import React, {useState} from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from './login.style';
@@ -24,8 +25,23 @@ const LoginPage = ({navigation}) => {
     const [responseData, setResponseData] = useState(null);
     const [obsecureText, setObsecureText] = useState(false);
 
+  
+    const testBackendConnection = async () => {
+        try {
+            const baseUrl = Platform.OS === 'web' ? 'http://localhost:3000' : 'http://10.0.2.2:3000';
+            const testEndpoint = `${baseUrl}/api/products`;
+            console.log('Testing backend connection to:', testEndpoint);
+            const response = await axios.get(testEndpoint);
+            console.log('Backend connection successful:', response.status);
+            return true;
+        } catch (error) {
+            console.log('Backend connection failed:', error.message);
+            return false;
+        }
+    };
+
     const inValidForm = () => {
-        Alert.alert(
+    showAlert(
           "Invalid Form",
           "Please provide all required fields",
           [
@@ -35,60 +51,109 @@ const LoginPage = ({navigation}) => {
             {
               text: "Continue", onPress: ()=> {}
             },
-            {defaultIndex: 1}
+          
           ]
         )
       };
 
       const login = async(values) => {
         setLoader(true)
+        console.log('Login attempt with:', { email: values.email, password: values.password ? '***' : 'empty' });
+        
         try {
-            const endpoint = "http://192.168.0.101:3000/api/login"
+            const isBackendConnected = await testBackendConnection();
+            if (!isBackendConnected) {
+                setLoader(false);
+                showAlert(
+                    "Connection Error",
+                    "Cannot connect to the server. Please ensure the backend server is running on port 3000.",
+                    [
+                        {
+                            text: "OK", 
+                            onPress: () => {}
+                        }
+                    ]
+                )
+                return;
+            }
+            
+            const baseUrl = Platform.OS === 'web' ? 'http://localhost:3000' : 'http://10.0.2.2:3000';
+            const endpoint = `${baseUrl}/api/login`
             const data = values;
+            
+            console.log('Making request to:', endpoint);
 
             const response = await axios.post(endpoint, data)
+            console.log('Response received:', response.status, response.data);
+            
             if(response.status === 200){
                 setLoader(false);
-                setResponseData(response.data)
-                await AsyncStorage.setItem(`user${responseData._id}`, JSON.stringify(responseData))
-                await AsyncStorage.setItem("id", JSON.stringify(responseData._id))
-                await AsyncStorage.setItem("token", JSON.stringify(responseData.token))
+                const user = response.data;
+                console.log('Login successful, user data:', user);
 
-
-                navigation.replace('Bottom Navigation')
-
+                                await AsyncStorage.setItem(`user${user._id}`, JSON.stringify(user))
+                                await AsyncStorage.setItem("id", JSON.stringify(user._id))
+                                await AsyncStorage.setItem("token", JSON.stringify(user.token))
                 
-            } else{
-                Alert.alert(
-                    "Error Logging In",
-                    "Please provide valid credentials",
-                    [
-                      {
-                        text: "Cancel", onPress: ()=> {}
-                      },
-                      {
-                        text: "Continue", onPress: ()=> {}
-                      },
-                      {defaultIndex: 1}
-                    ]
-                  )
+                                console.log('User data stored in AsyncStorage');
+                                navigation.reset({
+                                    index: 0,
+                                    routes: [{ name: 'Bottom Navigation' }],
+                                });
+                                setTimeout(() => {
+                                    navigation.navigate('Profile');
+                                }, 0);
             }
         } catch (error) {
-            Alert.alert(
-                "Error Logging In",
-                "Oops, try again with correct credentials.",
-                [
-                  {
-                    text: "Cancel", onPress: ()=> {}
-                  },
-                  {
-                    text: "Continue", onPress: ()=> {}
-                  },
-                  {defaultIndex: 1}
-                ]
-              )
-        } finally{
             setLoader(false);
+            console.log('Login error:', error);
+          
+            if (error.response) {
+                console.log('Server error response:', error.response.status, error.response.data);
+                let errorMessage = error.response.data?.message || "Login failed. Please check your credentials.";
+                if (error.response.status === 401) {
+                    if (errorMessage.includes("Wrong Credential")) {
+                        errorMessage = "Email not found. Please check your email address or create a new account.";
+                    } else if (errorMessage.includes("Wrong Password")) {
+                        errorMessage = "Incorrect password. Please try again.";
+                    }
+                }
+                
+                Alert.alert(
+                    "Login Error",
+                    errorMessage,
+                    [
+                        {
+                            text: "OK", 
+                            onPress: () => {}
+                        }
+                    ]
+                )
+            } else if (error.request) {
+                console.log('Network error - no response received');
+                Alert.alert(
+                    "Network Error",
+                    "Unable to connect to server. Please check your internet connection and ensure the backend server is running.",
+                    [
+                        {
+                            text: "OK", 
+                            onPress: () => {}
+                        }
+                    ]
+                )
+            } else {
+                console.log('Other error:', error.message);
+                Alert.alert(
+                    "Error",
+                    "An unexpected error occurred. Please try again.",
+                    [
+                        {
+                            text: "OK", 
+                            onPress: () => {}
+                        }
+                    ]
+                )
+            }
         }
       };
 
@@ -126,12 +191,15 @@ const LoginPage = ({navigation}) => {
                             <TextInput 
                                 placeholder='Enter Email'
                                 onFocus={() => {setFieldTouched('email')}}
-                                onBlur={() => {setFieldTouched('email', '')}}
+                                onBlur={() => {handleBlur('email')}}
                                 value={values.email}
                                 onChangeText={handleChange('email')}
                                 autoCapitalize='none'
                                 autoCorrect={false}
                                 style={{flex:1}}
+                                id="login-email"
+                                name="email"
+                                autoComplete="email"
                             />
                         </View>
 
@@ -154,12 +222,15 @@ const LoginPage = ({navigation}) => {
                                 secureTextEntry={obsecureText}
                                 placeholder='Password'
                                 onFocus={() => {setFieldTouched('password')}}
-                                onBlur={() => {setFieldTouched('password', '')}}
+                                onBlur={() => {handleBlur('password')}}
                                 value={values.password}
                                 onChangeText={handleChange('password')}
                                 autoCapitalize='none'
                                 autoCorrect={false}
                                 style={{flex:1}}
+                                id="login-password"
+                                name="password"
+                                autoComplete="current-password"
                             />
 
                             <TouchableOpacity onPress={() => {setObsecureText(!obsecureText)}}>

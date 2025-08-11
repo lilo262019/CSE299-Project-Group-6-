@@ -1,5 +1,8 @@
-import { View, Text, TouchableOpacity, Alert, Image, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Image, ScrollView, Platform } from 'react-native';
+import { showAlert } from '../components/showAlert';
 import React, { useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import styles from './profile.style';
 import { COLORS } from '../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -12,32 +15,73 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const Profile = () => {
   const navigation = useNavigation();
+  const tabBarHeight = Platform.OS === 'web' ? 0 : useBottomTabBarHeight();
   const [user, setUser] = useState(null);
-  const [userData] = useState(null);
-  const [userLogin] = useState(false);
+  const [userData, setUserData] = useState(null);
+  const [userLogin, setUserLogin] = useState(false);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const id = await AsyncStorage.getItem('id');
-      const token = await AsyncStorage.getItem('token');
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchUserData = async () => {
+        try {
+          console.log('Profile: Fetching user data...');
+          const id = await AsyncStorage.getItem('id');
+          const token = await AsyncStorage.getItem('token');
+          console.log('Profile: ID from storage:', id);
+          console.log('Profile: Token from storage:', token ? 'exists' : 'missing');
 
-      try {
-        const res = await axios.get(`http://192.168.0.101:3000/api/users/find/${JSON.parse(id)}`, {
-          headers: {
-            token: `Bearer ${JSON.parse(token)}`
+          if (!id || !token) {
+            console.log("Profile: Missing ID or token");
+            setUserLogin(false);
+            return;
           }
-        });
-        setUser(res.data);
-      } catch (error) {
-        console.log("Fetching user failed", error);
-      }
-    };
-    fetchUserData();
-  }, []);
+
+          const userDataString = await AsyncStorage.getItem('user' + JSON.parse(id));
+          console.log('Profile: User data from storage:', userDataString ? 'exists' : 'missing');
+
+          if (userDataString) {
+            const userFromStorage = JSON.parse(userDataString);
+            console.log('Profile: User data from storage:', userFromStorage);
+            setUser(userFromStorage);
+            setUserData(userFromStorage);
+            setUserLogin(true);
+            return;
+          }
+
+          console.log('Profile: Fetching user data from API...');
+          const baseUrl = Platform.OS === 'web' ? 'http://localhost:3000' : 'http://10.0.2.2:3000';
+          const res = await axios.get(`${baseUrl}/api/users/${JSON.parse(id)}`, {
+            headers: {
+              token: `Bearer ${JSON.parse(token)}`
+            }
+          });
+          console.log('Profile: User data from API:', res.data);
+          setUser(res.data);
+          setUserData(res.data);
+          setUserLogin(true);
+        } catch (error) {
+          console.log("Profile: Fetching user failed", error);
+          setUserLogin(false);
+        }
+      };
+      fetchUserData();
+    }, [])
+  );
 
   const handleLogout = async () => {
-    await AsyncStorage.removeItem('token');
-    navigation.replace("LoginPage");
+    try {
+      // Clear all user-related data
+      const id = await AsyncStorage.getItem('id');
+      if (id) {
+        await AsyncStorage.removeItem(`user${JSON.parse(id)}`);
+      }
+      await AsyncStorage.multiRemove(['id', 'token']);
+      console.log('User logged out successfully');
+      navigation.replace("LoginPage");
+    } catch (error) {
+      console.log('Logout error:', error);
+      navigation.replace("LoginPage");
+    }
   };
 
   const handleClearCache = async () => {
@@ -45,37 +89,9 @@ const Profile = () => {
     navigation.replace("Bottom Navigation");
   };
 
-  const confirmDeleteAccount = () => {
-    Alert.alert(
-      "Delete Account",
-      "Are you sure you want to delete your account?",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Delete", onPress: () => handleDeleteAccount() }
-      ]
-    );
-  };
-
-  const handleDeleteAccount = async () => {
-    const id = await AsyncStorage.getItem("id");
-    const token = await AsyncStorage.getItem("token");
-
-    try {
-      await axios.delete(`http://localhost:3000/api/users/${JSON.parse(id)}`, {
-        headers: {
-          token: `Bearer ${JSON.parse(token)}`
-        }
-      });
-
-      await AsyncStorage.multiRemove(['id', 'token']);
-      navigation.replace("LoginPage");
-    } catch (error) {
-      console.log("Delete failed", error);
-    }
-  };
 
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={{ paddingBottom: tabBarHeight + 20 }}>
       <View style={styles.container}>
        <View style={styles.container}>
           <StatusBar backgroundColor={COLORS.lightWhite}/>
@@ -94,17 +110,22 @@ const Profile = () => {
                 {userLogin === true ? userData.username : "Please Log In Into Your Account"}
               </Text>
 
+              {userLogin === true && (
+                <Text style={styles.location}>
+                  {userData.location || "Location not set"}
+                </Text>
+              )}
 
               {userLogin === false ? (
                 <TouchableOpacity onPress={()=>navigation.navigate('LoginPage')}>
                   <View style={styles.loginBtn}>
-                    <Text style={styles.menuText}>LOG IN </Text>
+                    <Text style={styles.menuText}> LOG IN </Text>
                   </View>
                 </TouchableOpacity>
               ) : (
                 <View style={styles.loginBtn}>
-                  <Text style={styles.menuText}>{userData.email}  </Text>
-                  </View>
+                  <Text style={styles.menuText}> {userData.email} </Text>
+                </View>
               )}
 
               {userLogin === false ? (
@@ -155,16 +176,7 @@ const Profile = () => {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => confirmDeleteAccount()}>
-                        <View style={styles.menuItem(0.5)}>
-                            <AntDesign 
-                            name="deleteuser"
-                            color={COLORS.primary}
-                            size={24}
-                            />
-                            <Text style={styles.menuText}>Delete Account</Text>
-                        </View>
-                    </TouchableOpacity>
+
 
 
                     <TouchableOpacity onPress={() => handleLogout()}>

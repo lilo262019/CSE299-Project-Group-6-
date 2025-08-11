@@ -8,5 +8,6 @@ import LoginPage from './LoginPage';
 import Favourites from './Favourites';
 import Orders from './Orders';
 import SignUp from './SignUp';
+import Checkout from './Checkout';
 
-export { Cart, Home, Profile, Search, ProductDetails, NewRivals, LoginPage, Favourites, Orders, SignUp };
+export { Cart, Home, Profile, Search, ProductDetails, NewRivals, LoginPage, Favourites, Orders, SignUp, Checkout };
