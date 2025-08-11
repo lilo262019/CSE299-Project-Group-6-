@@ -7,8 +7,8 @@ import { showAlert } from '../components/showAlert';
 import BackBtn from '../components/BackBtn';
 import Button from '../components/Button';
 
-export default function Checkout({ navigation }) {
-  const [country, setCountry] = useState("Hong Kong SAR China");
+export default function Checkout({ navigation, route }) {
+  const [cartItems, setCartItems] = useState(route?.params?.items || []);
   const [paymentMethod, setPaymentMethod] = useState('Credit Card');
   const [isPaying, setIsPaying] = useState(false);
   const [user, setUser] = useState(null);
@@ -36,8 +36,7 @@ export default function Checkout({ navigation }) {
     fetchUserData();
   }, []);
 
-  const handlePay = () => {
-    // Email required for all
+  const handlePay = async () => {
     if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
       showAlert('Invalid Email', 'Please enter a valid email address.');
       return;
@@ -60,16 +59,55 @@ export default function Checkout({ navigation }) {
       }
     }
     setIsPaying(true);
-    setTimeout(() => {
+    setTimeout(async () => {
       setIsPaying(false);
-      showAlert('Payment Successful', `Paid with ${paymentMethod}`);
+  
+      try {
+        const id = await AsyncStorage.getItem('id');
+        const ordersId = `orders${JSON.parse(id)}`;
+        const ordersObj = await AsyncStorage.getItem(ordersId);
+        let orders = ordersObj ? JSON.parse(ordersObj) : {};
+        const orderId = `order_${Date.now()}`;
+   
+        const total = cartItems.reduce((sum, item) => {
+          const price = Number(item.cartItem?.price || 0);
+          const quantity = Number(item.quantity || 1);
+          return sum + price * quantity;
+        }, 0);
+        orders[orderId] = {
+          id: orderId,
+          title: `Order #${Object.keys(orders).length + 1}`,
+          price: total,
+          items: cartItems,
+          paymentMethod,
+          email,
+          date: new Date().toLocaleString(),
+        };
+        await AsyncStorage.setItem(ordersId, JSON.stringify(orders));
+      
+        const cartId = `cart${JSON.parse(id)}`;
+        await AsyncStorage.removeItem(cartId);
+        showAlert('Payment Successful', `Paid with ${paymentMethod}`);
+      
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Orders' }],
+        });
+      } catch (e) {
+        showAlert('Error', 'Could not save order.');
+      }
     }, 1200);
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={{ position: 'relative', marginBottom: 20 }}>
-        <BackBtn onPress={() => navigation && navigation.goBack ? navigation.goBack() : null} />
+        <BackBtn onPress={() => {
+          if (route?.params?.onCheckoutSuccess) {
+            route.params.onCheckoutSuccess();
+          }
+          navigation.navigate('Cart');
+        }} />
         <View style={{ alignItems: 'center', marginTop: 10 }}>
           <Text style={styles.title}>
             {userLogin && user ? user.username : 'Guest'}

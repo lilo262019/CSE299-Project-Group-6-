@@ -45,7 +45,9 @@ const Home = () => {
       <View style={styles.appBarWrapper}>
         <View style={styles.appBar}>
           <Ionicons name='location-outline' size={24} />
-          <Text style={styles.location}> Dhaka Bangladesh</Text>
+          <Text style={styles.location}>
+            {userLogin && userData && userData.location ? userData.location : 'Dhaka Bangladesh'}
+          </Text>
 
           <View style={{ alignItems: "flex-end" }}>
             <View style={styles.cartCount}>

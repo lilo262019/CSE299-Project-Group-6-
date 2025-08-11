@@ -12,7 +12,10 @@ import fetchCart from '../hooks/fetchCart'
 import { Button, CartTile } from '../components'
 import axios from 'axios' 
 
-const Cart = ({ navigation }) => {
+import { useNavigation } from '@react-navigation/native';
+
+const Cart = (props) => {
+  const navigation = props.navigation || useNavigation();
   const baseUrl = Platform.OS === 'web' ? 'http://localhost:3000' : 'http://10.0.2.2:3000';
   const { data, loading, error, refetch } = fetchCart();
   const [selectedItems, setSelectedItems] = useState([]); 
@@ -38,6 +41,16 @@ const Cart = ({ navigation }) => {
   useEffect(() => {
     const getToken = async () => {
       let storedToken = await AsyncStorage.getItem('token');
+          <Button 
+            title={`Checkout (${selectedItems.length} items)`} 
+            isValid={selectedItems.length > 0}
+            onPress={() => {
+              navigation.navigate('Checkout', {
+                items: selectedItems,
+                onCheckoutSuccess: () => setSelectedItems([])
+              });
+            }}
+          />
       if (storedToken) {
         storedToken = storedToken.replace(/(^"|"$)/g, '');
         setToken(storedToken);
@@ -124,7 +137,7 @@ const Cart = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
   <View style={styles.titleRow}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => navigation.navigate('Bottom Navigation', { screen: 'Home' })}>
           <Ionicons 
             name='chevron-back-circle'
             size={30}
